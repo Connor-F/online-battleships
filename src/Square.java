@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Square extends JButton
 {
@@ -12,11 +13,13 @@ public class Square extends JButton
     private static String hitIconPath = "images/hit.jpg";
     private static String missIconPath = "images/miss.jpg";
 
-    public Square(Ship ship)
+    public Square()
     {
-        this.ship = ship;
         hit = false;
+        setPreferredSize(new Dimension(35, 35));
         setIcon(new ImageIcon(unknownIconPath));
     }
+
+    public void setShip(Ship ship) { this.ship = ship; }
 
 }

@@ -19,6 +19,7 @@ public class GameInterface extends JFrame
     
     private void initialiseInterface()
     {
+        setTitle("Battleships Online");
         rootPanel = new JPanel();
         rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
         oceanPanel = new JPanel();
@@ -64,25 +65,18 @@ public class GameInterface extends JFrame
 
         rootPanel.add(gameStatsPanel);
 
-        Square board[] = new Square[121];
-        Square enemy[] = new Square[121];
-        for(int i = 0; i < 121; i++)
+        // setup our and enemy ocean
+        for(int i = 0; i < 11; i++)
         {
-            board[i] = new Square(Square.Ship.BATTLESHIP);
-            enemy[i] = new Square(Square.Ship.BATTLESHIP);
-            enemy[i].setPreferredSize(new Dimension(35, 35));
-            board[i].setPreferredSize(new Dimension(35, 35));
-            myOceanPanel.add(board[i]);
-            enemyOceanPanel.add(enemy[i]);
+            for(int j = 0; j < 11; j++)
+            {
+                myOceanPanel.add(new Square());
+                enemyOceanPanel.add(new Square());
+            }
         }
-            //myOceanPanel.add(new Square(Square.Ship.BATTLESHIP));
-        //for(int i = 0; i < 121; i++)
-          //  enemyOceanPanel.add(new Square(Square.Ship.BATTLESHIP));
-
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        pack();
         setVisible(true);
     }
 }
