@@ -22,6 +22,17 @@ public class BattleshipsServer
     public BattleshipsServer()
     {
         listenAndSetup();
+        System.out.println("p1: " + playerOneOcean + "\n" + "p2: " + playerTwoOcean);
+
+        for(int i = 0; i < 11; i++)
+        {
+            for(int j = 0; j < 11; j++)
+            {
+                System.out.println(playerOneOcean[i][j].getShip());
+            }
+        }
+
+
         try
         {
             playRound();

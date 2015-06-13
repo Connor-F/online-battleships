@@ -25,8 +25,13 @@ public class BattleshipsClient
     private void initialiseOcean()
     {
         for(int i = 0; i < 11; i++)
+        {
             for(int j = 0; j < 11; j++)
+            {
                 ocean[i][j] = new Square(i, j);
+                ocean[i][j].setShip(Square.Ship.EMPTY);
+            }
+        }
         ocean[0][0].setShip(Square.Ship.DESTROYER);
         ocean[0][1].setShip(Square.Ship.DESTROYER);
         ocean[1][0].setShip(Square.Ship.SUBMARINE);
