@@ -5,7 +5,14 @@ public class Main
 {
     public static void main(String[] args)
     {
-        new GameInterface();
-        new Player();
+        try
+        {
+            new GameInterface();
+            new BattleshipsClient();
+        }
+        catch(Exception e)
+        {
+            // todo
+        }
     }
 }

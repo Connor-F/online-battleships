@@ -16,7 +16,7 @@ public class GameInterface extends JFrame
     {
         initialiseInterface();
     }
-    
+
     private void initialiseInterface()
     {
         setTitle("Battleships Online");
@@ -70,11 +70,12 @@ public class GameInterface extends JFrame
         {
             for(int j = 0; j < 11; j++)
             {
-                myOceanPanel.add(new Square());
-                enemyOceanPanel.add(new Square());
+                myOceanPanel.add(new Square(-1, -1));
+                enemyOceanPanel.add(new Square(-1, -1));
             }
         }
 
+        pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);

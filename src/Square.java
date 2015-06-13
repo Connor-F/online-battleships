@@ -12,14 +12,21 @@ public class Square extends JButton
     private static String unknownIconPath = "images/unknown.jpg";
     private static String hitIconPath = "images/hit.jpg";
     private static String missIconPath = "images/miss.jpg";
+    private int xPos;
+    private int yPos;
 
-    public Square()
+    public Square(int x, int y)
     {
+        xPos = x;
+        yPos = y;
         hit = false;
         setPreferredSize(new Dimension(35, 35));
         setIcon(new ImageIcon(unknownIconPath));
     }
 
     public void setShip(Ship ship) { this.ship = ship; }
+
+    public int getxPos() { return xPos; }
+    public int getyPos() { return yPos; }
 
 }
