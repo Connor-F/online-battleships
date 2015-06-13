@@ -16,39 +16,7 @@ public class BattleshipsClient
     {
         SERVER_ADDRESS = InetAddress.getByName("127.0.0.1");
         myTurn = false;
-
-        initialiseOcean();
-        setupServerConnection();
-    }
-
-
-    private void initialiseOcean()
-    {
-        for(int i = 0; i < 11; i++)
-        {
-            for(int j = 0; j < 11; j++)
-            {
-                ocean[i][j] = new Square(i, j);
-                ocean[i][j].setShip(Square.Ship.EMPTY);
-            }
-        }
-        ocean[0][0].setShip(Square.Ship.DESTROYER);
-        ocean[0][1].setShip(Square.Ship.DESTROYER);
-        ocean[1][0].setShip(Square.Ship.SUBMARINE);
-        ocean[1][1].setShip(Square.Ship.SUBMARINE);
-        ocean[1][2].setShip(Square.Ship.SUBMARINE);
-        ocean[2][0].setShip(Square.Ship.CRUISER);
-        ocean[2][1].setShip(Square.Ship.CRUISER);
-        ocean[2][2].setShip(Square.Ship.CRUISER);
-        ocean[3][0].setShip(Square.Ship.BATTLESHIP);
-        ocean[3][1].setShip(Square.Ship.BATTLESHIP);
-        ocean[3][2].setShip(Square.Ship.BATTLESHIP);
-        ocean[3][3].setShip(Square.Ship.BATTLESHIP);
-        ocean[4][0].setShip(Square.Ship.CARRIER);
-        ocean[4][1].setShip(Square.Ship.CARRIER);
-        ocean[4][2].setShip(Square.Ship.CARRIER);
-        ocean[4][3].setShip(Square.Ship.CARRIER);
-        ocean[4][4].setShip(Square.Ship.CARRIER);
+        setupServerConnection(); // must be done after ocean initialised, otherwise ocean doesn't contain any ships
     }
 
     private void setupServerConnection() throws IOException
@@ -59,6 +27,4 @@ public class BattleshipsClient
         ObjectOutputStream oos = new ObjectOutputStream(toServer.getOutputStream()); // pass our ocean to the server
         oos.writeObject(ocean);
     }
-
-    public Square[][] getOcean() { return ocean; }
 }
