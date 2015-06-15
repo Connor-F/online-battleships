@@ -1,13 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
-public class GameInterface extends JFrame implements ActionListener
+public class GameInterface extends JFrame
 {
+    private static GameInterface ui = null;
     private JPanel rootPanel = new JPanel();
     private JPanel oceanPanel = new JPanel();
     private JPanel myOceanPanel = new JPanel(new GridLayout(11, 11));
@@ -17,12 +16,12 @@ public class GameInterface extends JFrame implements ActionListener
     private JPanel enemyFleetInfoPanel = new JPanel();
     private JPanel gameStatsPanel = new JPanel();
 
-    // buttons for placing the ships in the players ocean
-    private JButton destroyerBtn = new JButton("DESTROYER");
-    private JButton submarineBtn = new JButton("SUBMARINE");
-    private JButton cruiserBtn = new JButton("CRUISER");
-    private JButton battleshipBtn = new JButton("BATTLESHIP");
-    private JButton carrierBtn = new JButton("CARRIER");
+    private Ship destroyerShip = new Destroyer();
+    private Ship submarineShip = new Submarine();
+    private Ship cruiserShip = new Cruiser();
+    private Ship battleShip = new Battleship();
+    private Ship carrierShip = new Carrier();
+
     /** used to indicate when a player has finished selecting the squares for their ship position */
     private boolean doneSelecting = false;
 
@@ -31,8 +30,15 @@ public class GameInterface extends JFrame implements ActionListener
 
     public GameInterface()
     {
+        ui = this;
         initialiseInterface();
     }
+
+    /**
+     * singleton allows for sending of data to this class
+     * @return the GameInterface instance that is running
+     */
+    public static GameInterface getInstance() { return ui; }
 
     private void initialiseInterface()
     {
@@ -51,33 +57,18 @@ public class GameInterface extends JFrame implements ActionListener
         fleetInfoPanel.add(myFleetInfoPanel);
         fleetInfoPanel.add(enemyFleetInfoPanel);
 
-        //space fill
-        destroyerBtn.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                System.out.println("destroyer pressed");
-                setupDestroyer();
-            }
-        });
-        submarineBtn.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                System.out.println("submarineBtn pressed");
-            }
-        });
-
         myFleetInfoPanel.add(new JLabel("placeholder"));
         enemyFleetInfoPanel.add(new JLabel("placeholder"));
         gameStatsPanel.add(new JLabel("placeholder"));
-        myFleetInfoPanel.add(destroyerBtn);
-        myFleetInfoPanel.add(submarineBtn);
-        myFleetInfoPanel.add(cruiserBtn);
-        myFleetInfoPanel.add(battleshipBtn);
-        myFleetInfoPanel.add(carrierBtn);
+
+
+        myFleetInfoPanel.add(new Destroyer());
+        myFleetInfoPanel.add(new Submarine());
+        myFleetInfoPanel.add(new Cruiser());
+        myFleetInfoPanel.add(new Battleship());
+        myFleetInfoPanel.add(new Carrier());
+        //addAllActionListeners();
+
         enemyFleetInfoPanel.add(new JButton("placeholder"));
         enemyFleetInfoPanel.add(new JButton("placeholder"));
         enemyFleetInfoPanel.add(new JButton("placeholder"));
@@ -108,49 +99,74 @@ public class GameInterface extends JFrame implements ActionListener
         setVisible(true);
     }
 
-    private void setupDestroyer()
+    protected void setupShip(Ship shipToAdd)
     {
+//        System.out.println("adding: " + shipToAdd);
         if(!doneSelecting) // the ship is being placed
         {
-            destroyerBtn.setText("Done");
-            submarineBtn.setEnabled(false);
-            cruiserBtn.setEnabled(false);
-            battleshipBtn.setEnabled(false);
-            carrierBtn.setEnabled(false);
-
+            shipToAdd.setText("Done");
+            disableAllShipButtons();
+            shipToAdd.setEnabled(true);
             doneSelecting = true;
         }
-        else // the ship has been placed
+        else // the ships squares have been chosen
         {
-            ArrayList<Point> coordsSelected = Square.getSelectedPoints(); // the points the have been selected for this ship
-
-            if(checkIfHorizontal(coordsSelected, 2)) // we must draw the ship horizontally at the selected coords
-            {
-                coordsSelected = sortByXCoords(coordsSelected);
-                for(int i = 0; i < 2; i++)
-                    myOcean[(int)coordsSelected.get(i).getX()][(int)coordsSelected.get(i).getY()].setIcon(new ImageIcon("images/ships/destroyer_horizontal_" + (i + 1) + ".jpg")); // todo: rename images starting from 0
-            }
-            else if(checkIfVertical(coordsSelected, 2))
-            {
-                coordsSelected = sortByYCoords(coordsSelected);
-                for(int i = 0; i < 2; i++)
-                    myOcean[(int)coordsSelected.get(i).getX()][(int)coordsSelected.get(i).getY()].setIcon(new ImageIcon("images/ships/destroyer_vertical_" + (i + 1) + ".jpg"));
-            }
-            else
-            {
-                System.out.println("Invalid placement for the destroyer.");
-                // todo: cleanup
-            }
-
-            destroyerBtn.setText("DESTROYER");
-            submarineBtn.setEnabled(true);
-            cruiserBtn.setEnabled(true);
-            battleshipBtn.setEnabled(true);
-            carrierBtn.setEnabled(true);
-
-            destroyerBtn.setEnabled(false);
-
+ //           System.out.println("setupShip trying to add: " + shipToAdd.getInitialText());
+            ArrayList<Point> coordsSelected = Square.getSelectedPoints(); // the points that have been selected for this ship
+            processShip(coordsSelected, shipToAdd.getImagePath(), shipToAdd.getShipSize()); // get the ship drawn to the screen (if coords valid)
+            shipToAdd.setText(shipToAdd.getInitialText());
+            enableAllShipButtons();
+            shipToAdd.setEnabled(false);
+            doneSelecting = false;
         }
+    }
+
+    private void disableAllShipButtons()
+    {
+        carrierShip.setEnabled(false);
+        battleShip.setEnabled(false);
+        cruiserShip.setEnabled(false);
+        submarineShip.setEnabled(false);
+        destroyerShip.setEnabled(false);
+    }
+
+    private void enableAllShipButtons()
+    {
+        carrierShip.setEnabled(true);
+        battleShip.setEnabled(true);
+        cruiserShip.setEnabled(true);
+        submarineShip.setEnabled(true);
+        destroyerShip.setEnabled(true);
+    }
+
+    /**
+     * uses multiple methods to verify the coordinates provided are valid, then draws the correct ship image to the screen.
+     * This is the only method that should be called when a ship needs to be drawn to the screen
+     * @param coords the coords the user selected the ship to be at
+     * @param imagePath the path to the type of ship being placed
+     * @param shipSize the length of the ship to be placed
+     */
+    private void processShip(ArrayList<Point> coords, String imagePath, int shipSize)
+    {
+        if(checkIfHorizontal(coords, shipSize))
+            drawShipToOcean(sortByXCoords(coords), imagePath + "horizontal_", shipSize);
+        else if(checkIfVertical(coords, shipSize))
+            drawShipToOcean(sortByYCoords(coords), imagePath + "vertical_", shipSize);
+        else
+            System.out.println("Invalid placement for the " + imagePath); // todo cleanup after error, make new exception
+    }
+
+    /**
+     * draws the correct image that makes up the ship to the correct buttons. This shouldn't be called directly. Use processShip instead.
+     * @param coords the coordinates to draw to. These must be sorted before being passed in
+     * @param imagePath String to the images that make up the desired ship
+     * @param shipSize the length of the ship
+     */
+    private void drawShipToOcean(ArrayList<Point> coords, String imagePath, int shipSize)
+    {
+        for(int i = 0; i < shipSize; i++)
+            myOcean[(int)coords.get(i).getX()][(int)coords.get(i).getY()].setIcon(new ImageIcon(imagePath + (i + 1) + ".jpg"));
+        Square.clearSelectedPoints();
     }
 
     private boolean checkIfVertical(ArrayList<Point> coords, int shipSize)
@@ -228,10 +244,4 @@ public class GameInterface extends JFrame implements ActionListener
         return coords;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        System.out.println("source: " + e.getSource());
-
-    }
 }

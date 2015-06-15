@@ -15,6 +15,7 @@ public class Square extends JButton implements ActionListener
     private static String unknownIconPath = "images/unknown.jpg";
     private static String hitIconPath = "images/hit.jpg";
     private static String missIconPath = "images/miss.jpg";
+    private static String selectedIconPath = "images/selected.jpg";
     private Point coordinates;
     /** holds a list of all clicked squares. Used when placing ships */
     private static ArrayList<Point> selectedPoints;
@@ -61,13 +62,14 @@ public class Square extends JButton implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         selectedPoints.add(coordinates);
-        System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
-        setIcon(new ImageIcon(hitIconPath));
+        //System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
+        setIcon(new ImageIcon(selectedIconPath));
     }
 
     public void setShip(Ship ship) { this.ship = ship; }
 
     public Ship getShip() { return ship; }
     public static ArrayList<Point> getSelectedPoints() { return selectedPoints; }
+    public static void clearSelectedPoints() { selectedPoints.clear(); }
 
 }
