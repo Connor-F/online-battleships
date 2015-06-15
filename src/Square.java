@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Square extends JButton implements ActionListener
 {
@@ -14,28 +15,29 @@ public class Square extends JButton implements ActionListener
     private static String unknownIconPath = "images/unknown.jpg";
     private static String hitIconPath = "images/hit.jpg";
     private static String missIconPath = "images/miss.jpg";
-    private int xPos;
-    private int yPos;
+    private Point coordinates;
+    /** holds a list of all clicked squares. Used when placing ships */
+    private static ArrayList<Point> selectedPoints;
 
     public Square(int x, int y)
     {
-        xPos = x;
-        yPos = y;
-        setIcon(getCorrectHeading(x, y));
+        coordinates = new Point(x, y);
+        setIcon(getCorrectHeading());
         hit = false;
         ship = Ship.EMPTY;
         setPreferredSize(new Dimension(35, 35));
+        selectedPoints = new ArrayList<>();
         addActionListener(this);
     }
 
     /**
-     * finds the correct ImageIcon for the button provided. (for headers)
-     * @param x the xPos of the button
-     * @param y the yPos of the button
+     * finds the correct ImageIcon for the button provided using the Point of this square. (for headers)
      * @return an ImageIcon that is correct for the button at the provided position
      */
-    private ImageIcon getCorrectHeading(int x, int y)
+    private ImageIcon getCorrectHeading()
     {
+        int x = (int)coordinates.getX();
+        int y = (int)coordinates.getY();
         if(y == 0) // must be a row heading
         {
             setEnabled(false); // columns / rows headings are not usable
@@ -51,17 +53,21 @@ public class Square extends JButton implements ActionListener
         return new ImageIcon(unknownIconPath); // normal square
     }
 
+    /**
+     * called when a square on the grid is clicked
+     * @param e the ActionEvent that caused the function call
+     */
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        System.out.println("in actionPerformed: x=" + xPos + "    y=" + yPos);
+        selectedPoints.add(coordinates);
+        System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
         setIcon(new ImageIcon(hitIconPath));
     }
 
     public void setShip(Ship ship) { this.ship = ship; }
 
-    public int getxPos() { return xPos; }
-    public int getyPos() { return yPos; }
     public Ship getShip() { return ship; }
+    public static ArrayList<Point> getSelectedPoints() { return selectedPoints; }
 
 }
