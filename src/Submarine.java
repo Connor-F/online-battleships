@@ -10,7 +10,9 @@ public class Submarine extends Ship
         setImagePath("images/ships/submarine_");
         setInitialText("SUBMARINE (3)");
         setShipSize(3);
+        setIsPlaced(false);
         addActionListener(this);
+        //addToAllShips(this);
     }
 
     @Override

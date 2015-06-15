@@ -8,6 +8,8 @@ public class Destroyer extends Ship
         setInitialText("DESTROYER (2)");
         setShipSize(2);
         addActionListener(this);
+        setIsPlaced(false);
+        //addToAllShips(this);
     }
 
     @Override

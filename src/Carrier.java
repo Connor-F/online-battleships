@@ -10,7 +10,9 @@ public class Carrier extends Ship
         setImagePath("images/ships/carrier_");
         setInitialText("CARRIER (5)");
         setShipSize(5);
+        setIsPlaced(false);
         addActionListener(this);
+        //addToAllShips(this);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class Main
         }
         catch(Exception e)
         {
-            // todo
+            System.out.println("Main exception: " + e.getMessage());
         }
     }
 }

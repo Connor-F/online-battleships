@@ -24,6 +24,8 @@ public class Square extends JButton implements ActionListener
     {
         coordinates = new Point(x, y);
         setIcon(getCorrectHeading());
+        if(x != 0 && y != 0) // headers always disabled, we dont need an icon for them
+            setDisabledIcon(getCorrectHeading());
         hit = false;
         ship = Ship.EMPTY;
         setPreferredSize(new Dimension(35, 35));

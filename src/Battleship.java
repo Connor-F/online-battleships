@@ -10,7 +10,9 @@ public class Battleship extends Ship
         setImagePath("images/ships/battleship_");
         setInitialText("BATTLESHIP (4)");
         setShipSize(4);
+        setIsPlaced(false);
         addActionListener(this);
+        //addToAllShips(this);
     }
 
     @Override

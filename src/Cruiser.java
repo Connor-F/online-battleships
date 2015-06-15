@@ -10,7 +10,9 @@ public class Cruiser extends Ship
         setImagePath("images/ships/cruiser_");
         setInitialText("CRUISER (3)");
         setShipSize(3);
+        setIsPlaced(false);
         addActionListener(this);
+        //addToAllShips(this);
     }
 
     @Override
