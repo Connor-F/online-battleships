@@ -19,7 +19,11 @@ public class Submarine extends Ship
     public void actionPerformed(ActionEvent e)
     {
         //super.actionPerformed(e);
-        System.out.println("Action performed in: Submarine");
+        //System.out.println("Action performed in: Submarine");
         GameInterface.getInstance().setupShip(this);
+        //if(getIsPlaced())
+            //setEnabled(false);
+        //else
+            //setIsPlaced(!getIsPlaced());
     }
 }

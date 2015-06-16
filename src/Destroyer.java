@@ -18,7 +18,10 @@ public class Destroyer extends Ship
         //super.actionPerformed(e);
         //GameInterface.s
         //System.out.println("destroyer this: " + this);
-        System.out.println("in act. per. in Destroyer");
         GameInterface.getInstance().setupShip(this);
+        //if(getIsPlaced())
+            //setEnabled(false);
+        //else
+            //setEnabled(true);
     }
 }

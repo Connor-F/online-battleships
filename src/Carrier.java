@@ -19,7 +19,11 @@ public class Carrier extends Ship
     public void actionPerformed(ActionEvent e)
     {
         //super.actionPerformed(e);
-        System.out.println("Action performed in: Carrier");
+        //System.out.println("Action performed in: Carrier");
         GameInterface.getInstance().setupShip(this);
+//        if(getIsPlaced())
+//            setEnabled(false);
+//        else
+//            setIsPlaced(!getIsPlaced());
     }
 }

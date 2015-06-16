@@ -17,6 +17,7 @@ public class Square extends JButton implements ActionListener
     private static String missIconPath = "images/miss.jpg";
     private static String selectedIconPath = "images/selected.jpg";
     private Point coordinates;
+    private boolean isSelected;
     /** holds a list of all clicked squares. Used when placing ships */
     private static ArrayList<Point> selectedPoints;
 
@@ -27,6 +28,7 @@ public class Square extends JButton implements ActionListener
         if(x != 0 && y != 0) // headers always disabled, we dont need an icon for them
             setDisabledIcon(getCorrectHeading());
         hit = false;
+        isSelected = false;
         ship = Ship.EMPTY;
         setPreferredSize(new Dimension(35, 35));
         selectedPoints = new ArrayList<>();
@@ -64,14 +66,22 @@ public class Square extends JButton implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         selectedPoints.add(coordinates);
+        isSelected = true;
         //System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
         setIcon(new ImageIcon(selectedIconPath));
     }
 
-    public void setShip(Ship ship) { this.ship = ship; }
+    public void defaultIcon() { setIcon(new ImageIcon(unknownIconPath)); }
 
+    public void setShip(Ship ship) { this.ship = ship; }
+    public void setIsSelected(boolean selected) { isSelected = selected; }
+
+    public boolean getIsSelected() { return isSelected; }
     public Ship getShip() { return ship; }
     public static ArrayList<Point> getSelectedPoints() { return selectedPoints; }
-    public static void clearSelectedPoints() { selectedPoints.clear(); }
+    public static void clearSelectedPoints()
+    {
+        selectedPoints.clear();
+    }
 
 }

@@ -14,7 +14,7 @@ public class Ship extends JButton implements ActionListener
     private int shipSize;
     // todo store array of Point[shipSize] here to inidcate the location of the ships
     /** contains every Ship instance, so we can enumerate all the Ships to help with ui functions */
-    //private static ArrayList<Ship> allShips = new ArrayList<>();
+    //private static ArrayList<Ship> allShips = new ArrayList<>()
 
 
     private boolean isPlaced; // todo might not need this anymore
@@ -37,6 +37,9 @@ public class Ship extends JButton implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        //if(!isPlaced)
+            //setEnabled(false);
+        //isPlaced = !isPlaced; // second click of the button will make
         System.out.println("ship act. per.");
     }
 
