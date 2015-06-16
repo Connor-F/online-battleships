@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.net.*;
 import java.io.*;
 
@@ -18,6 +19,28 @@ public class BattleshipsClient
         myTurn = false;
         ocean = removeUnnecessaryInfo(GameInterface.getInstance().getMyOcean());
         setupServerConnection();
+        readAndSend();
+    }
+
+    private void readAndSend() throws IOException
+    {
+        while(true)
+        {
+            String fromServer = inFromServer.readLine();
+            switch(fromServer)
+            {
+                case CommunicationConstants.MY_TURN:
+                    GameInterface.getInstance().setMyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
+                    GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
+                    break;
+                case CommunicationConstants.NOT_MY_TURN:
+                    GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
+                    GameInterface.getInstance().setMyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**

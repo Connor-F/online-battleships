@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
@@ -20,7 +22,6 @@ public class GameInterface extends JFrame
     private Square[][] myOcean = new Square[11][11];
     private Square[][] enemyOcean = new Square[11][11];
 
-    private static boolean allShipsPlaced = false;
     public GameInterface()
     {
         ui = this;
@@ -38,6 +39,7 @@ public class GameInterface extends JFrame
             }
         }
 
+        setEnabledOcean(enemyOcean, true); // so we can click the enemy ocean squares to fire a missile
         try
         {
             new BattleshipsClient(); // now all ships are placed we open up the Client to connect to the server
@@ -82,6 +84,10 @@ public class GameInterface extends JFrame
         rootPanel.add(oceanPanel);
         oceanPanel.add(myOceanPanel);
         oceanPanel.add(enemyOceanPanel);
+
+        // used so when we set the border to indicate a players turn, the UI doesn't resize itself / need to call pack() again
+        myOceanPanel.setBorder(new LineBorder(Color.WHITE, 3));
+        enemyOceanPanel.setBorder(new LineBorder(Color.WHITE, 3));
 
         rootPanel.add(fleetInfoPanel);
         fleetInfoPanel.add(myFleetInfoPanel);
@@ -134,7 +140,7 @@ public class GameInterface extends JFrame
         setVisible(true);
     }
 
-    private void setEnabledMyOcean(boolean option)
+    private void setEnabledOcean(Square[][] ocean, boolean option)
     {
         for(int y = 0; y < 11; y++)
         {
@@ -142,15 +148,9 @@ public class GameInterface extends JFrame
             {
                 if(x == 0 || y == 0) // we want to ignore headings
                     continue;
-                myOcean[x][y].setEnabled(option);
+                ocean[x][y].setEnabled(option);
             }
         }
-    }
-
-    private void setEnabledAllShips(boolean option)
-    {
-        for(int i = 0; i < allShips.length; i++)
-            allShips[i].setEnabled(option);
     }
 
     /**
@@ -174,7 +174,7 @@ public class GameInterface extends JFrame
         {
             allShips[shipToAddIndex].setEnabled(true); //@@@@@@@@@@@@@@new
 
-            setEnabledMyOcean(true);
+            setEnabledOcean(myOcean, true);
             allShips[shipToAddIndex].setText("Done (" + allShips[shipToAddIndex].getShipSize() + ")");
 
             for(int i = 0; i < allShips.length; i++) // disable every other ship button
@@ -191,7 +191,7 @@ public class GameInterface extends JFrame
 
         if(allShips[shipToAddIndex].getIsPlaced())
         {
-            setEnabledMyOcean(false);
+            setEnabledOcean(myOcean, false);
             allShips[shipToAddIndex].setText(allShips[shipToAddIndex].getInitialText());
 
             for(int i = 0; i < allShips.length; i++) // enable all unplaced ship buttons
@@ -211,7 +211,7 @@ public class GameInterface extends JFrame
             catch(InvalidPlacementException | NoSuchShipException exc)
             {
                 System.out.println("Invalid ship placement. For: " + shipToAdd.getImagePath());
-                setEnabledMyOcean(false);
+                setEnabledOcean(myOcean, false);
                 allShips[shipToAddIndex].setEnabled(true); // @@@@@@@@@@@@@@@new
 
                 //@@@@@@@@@@@@@@@@@@ uncomment
@@ -366,6 +366,9 @@ public class GameInterface extends JFrame
         return coords;
     }
 
-    public Square[][] getMyOcean() { return myOcean.clone(); }
+    public Square[][] getMyOcean() { return myOcean; }
+    public void setMyOceanPanelBorder(Color border) { myOceanPanel.setBorder(new LineBorder(border, 3)); }
+    public void setEnemyOceanPanelBorder(Color border) { enemyOceanPanel.setBorder(new LineBorder(border, 3)); }
+
 
 }

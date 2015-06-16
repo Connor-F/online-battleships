@@ -12,6 +12,11 @@ public class BattleshipsServer
     private Square[][] playerTwoOcean = new Square[11][11];
     private Socket playerOneSocket;
     private Socket playerTwoSocket;
+    private BufferedReader playerOneInput;
+    private BufferedReader playerTwoInput;
+    private PrintWriter playerOneOutput;
+    private PrintWriter playerTwoOutput;
+    private boolean playerOneTurn;
 
 
     public static void main(String[] args)
@@ -40,30 +45,44 @@ public class BattleshipsServer
         {
             playRound();
         }
-        catch(IOException ioe)
+        catch(Exception ioe)
         {
+            System.out.println("playRound exception: " + ioe.getMessage());
             // todo refactor this catch
         }
     }
 
-    private void playRound() throws IOException
+    private void playRound() throws IOException, InterruptedException
     {
-        Random ran = new Random();
-        int turn = ran.nextInt(2);
-        BufferedReader playerOneInput = new BufferedReader(new InputStreamReader(playerOneSocket.getInputStream()));
-        BufferedReader playerTwoInput = new BufferedReader(new InputStreamReader(playerTwoSocket.getInputStream()));
-        PrintWriter playerOneOutput = new PrintWriter(playerOneSocket.getOutputStream());
-        PrintWriter playerTwoOutput = new PrintWriter(playerTwoSocket.getOutputStream());
+        if(new Random().nextInt(2) == 0)
+            playerOneTurn = true;
+        else
+            playerOneTurn = false;
 
-        if(turn == 0) // let playerOne go first
+        System.out.println("chose p1 first? : " + playerOneTurn);
+        playerOneInput = new BufferedReader(new InputStreamReader(playerOneSocket.getInputStream()));
+        playerTwoInput = new BufferedReader(new InputStreamReader(playerTwoSocket.getInputStream()));
+        playerOneOutput = new PrintWriter(playerOneSocket.getOutputStream());
+        playerTwoOutput = new PrintWriter(playerTwoSocket.getOutputStream());
+
+        while(true) // game loop
         {
-
+            Thread.sleep(300);
+            if(playerOneTurn)
+            {
+                playerOneOutput.println(CommunicationConstants.MY_TURN);
+                playerTwoOutput.println(CommunicationConstants.NOT_MY_TURN);
+                playerOneOutput.flush();
+                playerTwoOutput.flush();
+            }
+            else
+            {
+                playerTwoOutput.println(CommunicationConstants.MY_TURN);
+                playerOneOutput.println(CommunicationConstants.NOT_MY_TURN);
+                playerTwoOutput.flush();
+                playerOneOutput.flush();
+            }
         }
-        else // playerTwo
-        {
-
-        }
-
     }
 
     /**
