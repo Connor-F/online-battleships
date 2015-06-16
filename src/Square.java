@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class Square extends JButton implements ActionListener
 {
     /** the different types of ships that can be on a square */
-    public enum Ship { EMPTY, DESTROYER, SUBMARINE, CRUISER, BATTLESHIP, CARRIER }
+    public enum ShipType { EMPTY, DESTROYER, SUBMARINE, CRUISER, BATTLESHIP, CARRIER }
     /** the ship type that is located on this particular square */
-    private Ship ship;
+    private ShipType shipType;
     /** if this square has been hit already */
     private boolean hit;
     private static String unknownIconPath = "images/unknown.jpg";
@@ -29,7 +29,7 @@ public class Square extends JButton implements ActionListener
             setDisabledIcon(getCorrectHeading());
         hit = false;
         isSelected = false;
-        ship = Ship.EMPTY;
+        shipType = ShipType.EMPTY;
         setPreferredSize(new Dimension(35, 35));
         selectedPoints = new ArrayList<>();
         addActionListener(this);
@@ -65,19 +65,31 @@ public class Square extends JButton implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        selectedPoints.add(coordinates);
-        isSelected = true;
+        if(shipType != ShipType.EMPTY)
+            return; // can't select an already used square
+
+        isSelected = !isSelected;
+        if(isSelected)
+        {
+            selectedPoints.add(coordinates);
+            setIcon(new ImageIcon(selectedIconPath));
+        }
+        else
+        {
+            selectedPoints.remove(coordinates);
+            setIcon(new ImageIcon(unknownIconPath));
+        }
+
         //System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
-        setIcon(new ImageIcon(selectedIconPath));
     }
 
     public void defaultIcon() { setIcon(new ImageIcon(unknownIconPath)); }
 
-    public void setShip(Ship ship) { this.ship = ship; }
+    public void setShip(ShipType ship) { this.shipType = ship; }
     public void setIsSelected(boolean selected) { isSelected = selected; }
 
     public boolean getIsSelected() { return isSelected; }
-    public Ship getShip() { return ship; }
+    public ShipType getShip() { return shipType; }
     public static ArrayList<Point> getSelectedPoints() { return selectedPoints; }
     public static void clearSelectedPoints()
     {

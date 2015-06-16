@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 
 public class GameInterface extends JFrame
@@ -15,24 +16,44 @@ public class GameInterface extends JFrame
     private JPanel gameStatsPanel = new JPanel();
 
     private Ship[] allShips = new Ship[5];
-//    private Ship destroyerShip = new Destroyer();
-//    private Ship submarineShip = new Submarine();
-//    private Ship cruiserShip = new Cruiser();
-//    private Ship battleShip = new Battleship();
-//    private Ship carrierShip = new Carrier();
-
-    /**
-     * used to indicate when a player has finished selecting the squares for their ship position
-     */
-    private boolean doneSelecting = false;
 
     private Square[][] myOcean = new Square[11][11];
     private Square[][] enemyOcean = new Square[11][11];
 
+    private static boolean allShipsPlaced = false;
     public GameInterface()
     {
         ui = this;
         initialiseInterface();
+
+        while(!areAllShipsPlaced()) // block until all ships placed by the player
+        {
+            try
+            {
+                Thread.sleep(250);
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        try
+        {
+            new BattleshipsClient(); // now all ships are placed we open up the Client to connect to the server
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean areAllShipsPlaced()
+    {
+        for(int i = 0; i < allShips.length; i++)
+            if(!allShips[i].getIsPlaced())
+                return false;
+        return true;
     }
 
     /**
@@ -172,6 +193,7 @@ public class GameInterface extends JFrame
         {
             setEnabledMyOcean(false);
             allShips[shipToAddIndex].setText(allShips[shipToAddIndex].getInitialText());
+
             for(int i = 0; i < allShips.length; i++) // enable all unplaced ship buttons
                 if(!allShips[i].getIsPlaced())
                     allShips[i].setEnabled(true);
@@ -181,8 +203,12 @@ public class GameInterface extends JFrame
             {
                 allShips[shipToAddIndex].setEnabled(false); // @@@@@@@@@@@@@@@new
                 processShip(coordsSelected, allShips[shipToAddIndex]);
+
+                Square.ShipType type = findShipType(allShips[shipToAddIndex]); // need to know our ships type
+                for(Point p : coordsSelected)
+                    myOcean[(int)p.getX()][(int)p.getY()].setShip(type); // since the ship adding was successful, we now add the ship type to the squares clicked
             }
-            catch(InvalidPlacementException ipe)
+            catch(InvalidPlacementException | NoSuchShipException exc)
             {
                 System.out.println("Invalid ship placement. For: " + shipToAdd.getImagePath());
                 setEnabledMyOcean(false);
@@ -207,6 +233,26 @@ public class GameInterface extends JFrame
                 Square.clearSelectedPoints();
             }
         }
+    }
+
+    /**
+     * finds the type of the Ship provided
+     * @param ship the Ship to find the type of
+     * @return the type of the Ship or null if no type found (this should never happen)
+     */
+    private Square.ShipType findShipType(Ship ship) throws NoSuchShipException
+    {
+        if(ship instanceof Destroyer)
+            return Square.ShipType.DESTROYER;
+        else if(ship instanceof Submarine)
+            return Square.ShipType.SUBMARINE;
+        else if(ship instanceof Cruiser)
+            return Square.ShipType.CRUISER;
+        else if(ship instanceof Battleship)
+            return Square.ShipType.BATTLESHIP;
+        else if(ship instanceof Carrier)
+            return Square.ShipType.CARRIER;
+        throw new NoSuchShipException("No type exists for the provided Ship.");
     }
 
     /**
@@ -319,5 +365,7 @@ public class GameInterface extends JFrame
         });
         return coords;
     }
+
+    public Square[][] getMyOcean() { return myOcean.clone(); }
 
 }

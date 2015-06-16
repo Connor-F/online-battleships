@@ -24,6 +24,16 @@ public class BattleshipsServer
         listenAndSetup();
         System.out.println("p1: " + playerOneOcean + "\n" + "p2: " + playerTwoOcean);
 
+        for(int y = 0; y < 11; y++)
+        {
+            for(int x = 0; x < 11; x++)
+            {
+                if(x == 0 || y == 0) // we want to ignore headings
+                    continue;
+                System.out.println("p1 ship[" + x + "][" + y + "]: " + playerOneOcean[x][y].getShip());
+                System.out.println("p2 ship[" + x + "][" + y + "]: " + playerTwoOcean[x][y].getShip());
+            }
+        }
 
 
         try

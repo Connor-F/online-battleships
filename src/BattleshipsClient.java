@@ -16,7 +16,28 @@ public class BattleshipsClient
     {
         SERVER_ADDRESS = InetAddress.getByName("127.0.0.1");
         myTurn = false;
-        setupServerConnection(); // must be done after ocean initialised, otherwise ocean doesn't contain any ships
+        ocean = removeUnnecessaryInfo(GameInterface.getInstance().getMyOcean());
+        setupServerConnection();
+    }
+
+    /**
+     * the server doesn't need icons, filepaths, etc. so we just remove them before sending the data
+     * @param originalOcean the players ocean
+     * @return a Square[][] with any unneeded data removed
+     */
+    private Square[][] removeUnnecessaryInfo(Square[][] originalOcean)
+    {
+        Square[][] tempOcean = new Square[11][11];
+        for(int y = 0; y < 11; y++)
+        {
+            for(int x = 0; x < 11; x++)
+            {
+                tempOcean[x][y] = new Square(x, y);
+                tempOcean[x][y].setIcon(null);
+                tempOcean[x][y].setShip(originalOcean[x][y].getShip());
+            }
+        }
+        return tempOcean;
     }
 
     private void setupServerConnection() throws IOException

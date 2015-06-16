@@ -8,7 +8,7 @@ public class Main
         try
         {
             new GameInterface();
-            new BattleshipsClient();
+            //new BattleshipsClient();
         }
         catch(Exception e)
         {
