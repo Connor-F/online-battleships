@@ -25,14 +25,15 @@ public class BattleshipsClient
 
     private void readAndSend() throws IOException, InterruptedException
     {
+        GameInterface ui = GameInterface.getInstance();
         while(true)
         {
             String fromServer = inFromServer.readLine();
             switch(fromServer)
             {
                 case CommunicationConstants.MY_TURN:
-                    GameInterface.getInstance().setMyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
-                    GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
+                    ui.setMyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
+                    ui.setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
 
                     ArrayList<Point> selectedPoints;
                     while((selectedPoints = Square.getSelectedPoints()).size() != 1) // todo: probably better to make .getSelectedPoints block
@@ -45,14 +46,12 @@ public class BattleshipsClient
 
                     String reply = inFromServer.readLine();
                     if(reply.equals(CommunicationConstants.MISS))
-                    {
-                        GameInterface.getInstance().setEnemyOceanSquareMiss(x, y);
-                    }
+                        ui.setEnemyOceanSquareMiss(x, y);
 
                     break;
                 case CommunicationConstants.NOT_MY_TURN:
-                    GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
-                    GameInterface.getInstance().setMyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
+                    ui.setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
+                    ui.setMyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
                     break;
                 default:
                     break;

@@ -242,7 +242,8 @@ public class GameInterface extends JFrame
     /**
      * finds the type of the Ship provided
      * @param ship the Ship to find the type of
-     * @return the type of the Ship or null if no type found (this should never happen)
+     * @return the type of the Ship the parameter is
+     * @throws NoSuchShipException if the provided Ship isn't recognised. This should never happen.
      */
     private Square.ShipType findShipType(Ship ship) throws NoSuchShipException
     {
