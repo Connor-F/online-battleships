@@ -74,6 +74,26 @@ public class BattleshipsServer
                 playerTwoOutput.println(CommunicationConstants.NOT_MY_TURN);
                 playerOneOutput.flush();
                 playerTwoOutput.flush();
+                String xCoord = playerOneInput.readLine();
+                String yCoord = playerOneInput.readLine();
+                int x = Integer.valueOf(xCoord);
+                int y = Integer.valueOf(yCoord);
+                if(playerTwoOcean[x][y].getShip() == Square.ShipType.EMPTY) // p1 missed all of p2 ships
+                {
+                    playerOneOutput.println(CommunicationConstants.MISS);
+                    playerTwoOutput.println(CommunicationConstants.MISS);
+                    playerOneOutput.flush();
+                    playerTwoOutput.flush();
+                }
+                else
+                {
+                    playerOneOutput.println(CommunicationConstants.HIT);
+                    playerTwoOutput.println(CommunicationConstants.HIT);
+                    playerTwoOutput.println(x); // notify of hit, then of the coords the hit took place
+                    playerTwoOutput.println(y);
+                    playerOneOutput.flush();
+                    playerTwoOutput.flush();
+                }
             }
             else
             {
@@ -81,7 +101,30 @@ public class BattleshipsServer
                 playerOneOutput.println(CommunicationConstants.NOT_MY_TURN);
                 playerTwoOutput.flush();
                 playerOneOutput.flush();
+                String xCoord = playerOneInput.readLine();
+                String yCoord = playerOneInput.readLine();
+                int x = Integer.valueOf(xCoord);
+                int y = Integer.valueOf(yCoord);
+
+                if(playerOneOcean[x][y].getShip() == Square.ShipType.EMPTY) // p2 missed all of p1 ships
+                {
+                    playerOneOutput.println(CommunicationConstants.MISS);
+                    playerTwoOutput.println(CommunicationConstants.MISS);
+                    playerOneOutput.flush();
+                    playerTwoOutput.flush();
+                }
+                else
+                {
+                    playerOneOutput.println(CommunicationConstants.HIT);
+                    playerTwoOutput.println(CommunicationConstants.HIT);
+                    playerOneOutput.println(x); // notify of hit, then of the coords the hit took place
+                    playerOneOutput.println(y);
+                    playerOneOutput.flush();
+                    playerTwoOutput.flush();
+                }
             }
+
+            playerOneTurn = !playerOneTurn;
         }
     }
 

@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class BattleshipsClient
 {
@@ -13,7 +14,7 @@ public class BattleshipsClient
     private Square[][] ocean = new Square[11][11];
     private boolean myTurn;
 
-    public BattleshipsClient() throws IOException
+    public BattleshipsClient() throws IOException, InterruptedException
     {
         SERVER_ADDRESS = InetAddress.getByName("127.0.0.1");
         myTurn = false;
@@ -22,7 +23,7 @@ public class BattleshipsClient
         readAndSend();
     }
 
-    private void readAndSend() throws IOException
+    private void readAndSend() throws IOException, InterruptedException
     {
         while(true)
         {
@@ -32,6 +33,22 @@ public class BattleshipsClient
                 case CommunicationConstants.MY_TURN:
                     GameInterface.getInstance().setMyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
                     GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
+
+                    ArrayList<Point> selectedPoints;
+                    while((selectedPoints = Square.getSelectedPoints()).size() != 1) // todo: probably better to make .getSelectedPoints block
+                        Thread.sleep(200); // now we have the one clicked point, we can send the coords to the server to see if it was a hit / miss
+                    int x = (int)selectedPoints.get(0).getX();
+                    int y = (int)selectedPoints.get(0).getY();
+                    outToServer.println(x); // send the coords
+                    outToServer.println(y);
+                    outToServer.flush();
+
+                    String reply = inFromServer.readLine();
+                    if(reply.equals(CommunicationConstants.MISS))
+                    {
+                        GameInterface.getInstance().setEnemyOceanSquareMiss(x, y);
+                    }
+
                     break;
                 case CommunicationConstants.NOT_MY_TURN:
                     GameInterface.getInstance().setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);

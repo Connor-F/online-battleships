@@ -22,12 +22,16 @@ public class GameInterface extends JFrame
     private Square[][] myOcean = new Square[11][11];
     private Square[][] enemyOcean = new Square[11][11];
 
+    /** so we know how to handle a square click. If all the ships are placed a square click corresponds to where the player wants to launch a missle,
+     * otherwise it corresponds to where the player wants to place a ship */
+    private static boolean allShipsPlaced;
+
     public GameInterface()
     {
         ui = this;
         initialiseInterface();
 
-        while(!areAllShipsPlaced()) // block until all ships placed by the player
+        while(!(allShipsPlaced = areAllShipsPlaced())) // block until all ships placed by the player
         {
             try
             {
@@ -44,7 +48,7 @@ public class GameInterface extends JFrame
         {
             new BattleshipsClient(); // now all ships are placed we open up the Client to connect to the server
         }
-        catch(IOException e)
+        catch(Exception e)
         {
             e.printStackTrace();
         }
@@ -367,8 +371,15 @@ public class GameInterface extends JFrame
     }
 
     public Square[][] getMyOcean() { return myOcean; }
+    public static boolean getAllShipsPlaced() { return allShipsPlaced; }
     public void setMyOceanPanelBorder(Color border) { myOceanPanel.setBorder(new LineBorder(border, 3)); }
     public void setEnemyOceanPanelBorder(Color border) { enemyOceanPanel.setBorder(new LineBorder(border, 3)); }
+
+
+    public void setEnemyOceanSquareMiss(int x, int y)
+    {
+        enemyOcean[x][y].setToMissIcon();
+    }
 
 
 }

@@ -65,25 +65,58 @@ public class Square extends JButton implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if(shipType != ShipType.EMPTY)
-            return; // can't select an already used square
-
-        isSelected = !isSelected;
-        if(isSelected)
-        {
-            selectedPoints.add(coordinates);
-            setIcon(new ImageIcon(selectedIconPath));
-        }
-        else
-        {
-            selectedPoints.remove(coordinates);
-            setIcon(new ImageIcon(unknownIconPath));
-        }
-
+        pointSelection(GameInterface.getAllShipsPlaced());
         //System.out.println("Square act. perf. x=" + coordinates.getX() + "     y=" + coordinates.getY());
     }
 
+    /**
+     * used to allow the player to select squares for the ship they want to place
+     * @param areAllShipsPlaced an indicator to know whether the player has placed all their ships into their ocean yet
+     */
+    private void pointSelection(boolean areAllShipsPlaced)
+    {
+        if(areAllShipsPlaced) // click must be a missile lauch
+        {
+            selectedPoints.add(coordinates); // only one square allowed to be clicked at a time
+        }
+        else // player still placing ships
+        {
+            if(shipType != ShipType.EMPTY)
+                return; // can't select an already used square
+            isSelected = !isSelected;
+            if(isSelected)
+            {
+                selectedPoints.add(coordinates);
+                setIcon(new ImageIcon(selectedIconPath));
+            }
+            else
+            {
+                selectedPoints.remove(coordinates);
+                setIcon(new ImageIcon(unknownIconPath));
+            }
+        }
+
+
+       ///////////////////////////old
+//        if(shipType != ShipType.EMPTY)
+//            return; // can't select an already used square
+//
+//        isSelected = !isSelected;
+//        if(isSelected)
+//        {
+//            selectedPoints.add(coordinates);
+//            setIcon(new ImageIcon(selectedIconPath));
+//        }
+//        else
+//        {
+//            selectedPoints.remove(coordinates);
+//            setIcon(new ImageIcon(unknownIconPath));
+//        }
+    }
+
     public void defaultIcon() { setIcon(new ImageIcon(unknownIconPath)); }
+    public void setToHitIcon() { setIcon(new ImageIcon(hitIconPath)); }
+    public void setToMissIcon() { setIcon(new ImageIcon(missIconPath)); }
 
     public void setShip(ShipType ship) { this.shipType = ship; }
     public void setIsSelected(boolean selected) { isSelected = selected; }
