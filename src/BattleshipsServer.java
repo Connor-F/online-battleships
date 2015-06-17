@@ -86,9 +86,23 @@ public class BattleshipsServer
         players[1].getPlayerOutput().println(CommunicationConstants.HIT);
         flushOutputs();
 
+        players[1 - playersTurn].incrementHitCounter();
+        if(players[1 - playersTurn].checkHitCounter()) // check to see if that last hit was a hit on enemys final ship square
+        {
+           System.out.println("Round is over!!!!!!!!!!!");
+        }
+
+
+
         players[1 - playersTurn].getPlayerOutput().println((int)hitCoords.getX());
         players[1 - playersTurn].getPlayerOutput().println((int)hitCoords.getY());
         flushOutputs();
+    }
+
+
+    private void checkIfRoundOver()
+    {
+
     }
 
     /**

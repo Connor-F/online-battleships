@@ -12,6 +12,24 @@ public class Player
     private boolean myTurn;
     private Socket playerSocket;
     private Square[][] ocean = new Square[11][11];
+    private int shipHitCounter = 0;
+
+    /**
+     * used to see if the round is over
+     * @return if the number of squares hit is 17, then we know this player has had all their ships destroyed,
+     * therefore the round is over
+     */
+    public boolean checkHitCounter()
+    {
+        return shipHitCounter == 17;
+    }
+
+    public void incrementHitCounter()
+    {
+        ++shipHitCounter;
+    }
+
+
 
     public BufferedReader getPlayerInput()
     {
