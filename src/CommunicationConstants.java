@@ -3,7 +3,7 @@ import java.awt.*;
 /**
  * Created by connor on 16/06/15.
  */
-public class CommunicationConstants
+public abstract class CommunicationConstants
 {
     public static final String MY_TURN = "your_turn";
     public static final String NOT_MY_TURN = "!your_turn";

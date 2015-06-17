@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Random;
@@ -8,8 +9,12 @@ import java.util.Random;
 public class BattleshipsServer
 {
     private static final int LISTENING_PORT = 0xdead+1; // todo
-    private Player playerOne;
-    private Player playerTwo;
+    private Player[] players = new Player[2];
+    private int playersTurn;
+
+
+
+
 
     public static void main(String[] args)
     {
@@ -30,75 +35,102 @@ public class BattleshipsServer
         }
     }
 
+    private void notifyOfTurn()
+    {
+        players[playersTurn].getPlayerOutput().println(CommunicationConstants.MY_TURN);
+        players[1 - playersTurn].getPlayerOutput().println(CommunicationConstants.NOT_MY_TURN);
+        flushOutputs();
+    }
+
+    private Point findProvidedAttackPoint() throws IOException
+    {
+        String in;
+        while((in = players[playersTurn].getPlayerInput().readLine()) == null); // block until we read in data from the client
+        int providedX = Integer.valueOf(in);
+
+        while((in = players[playersTurn].getPlayerInput().readLine()) == null);
+        int providedY = Integer.valueOf(in);
+
+        System.out.println("points from player " + (1 - playersTurn) + ": " + "x:" + providedX + "    y:" + providedY);
+
+        return new Point(providedX, providedY);
+    }
+
+    private boolean checkIfSuccessfulAttack(Point attackCoords)
+    {
+        return players[1 - playersTurn].getOcean()[(int)attackCoords.getX()][(int)attackCoords.getY()].getShip() != Square.ShipType.EMPTY;
+    }
+
+    private void notifyOfMiss(Point missCoords)
+    {
+        players[0].getPlayerOutput().println(CommunicationConstants.MISS);
+        players[1].getPlayerOutput().println(CommunicationConstants.MISS);
+        flushOutputs(); // todo: only need one flush due to println
+
+        players[1 - playersTurn].getPlayerOutput().println((int)missCoords.getX());
+        players[1 - playersTurn].getPlayerOutput().println((int)missCoords.getY());
+        flushOutputs();
+    }
+
+    private void notifyOfHit(Point hitCoords)
+    {
+        players[0].getPlayerOutput().println(CommunicationConstants.HIT);
+        players[1].getPlayerOutput().println(CommunicationConstants.HIT);
+        flushOutputs();
+
+        players[1 - playersTurn].getPlayerOutput().println((int)hitCoords.getX());
+        players[1 - playersTurn].getPlayerOutput().println((int)hitCoords.getY());
+        flushOutputs();
+    }
+
+    /**
+     * handles the playing of the game
+     * @throws IOException
+     */
+    private void takeTurn() throws IOException
+    {
+//        if(isFirstGo) // todo this is temp fix
+//        {
+//            notifyOfTurn();
+//            isFirstGo = false;
+//        }
+
+        playersTurn = players[0].isMyTurn() ? 0 : 1;
+        notifyOfTurn();
+
+        Point attackCoords = findProvidedAttackPoint();
+        boolean attackSuccessful = checkIfSuccessfulAttack(attackCoords);
+        if(attackSuccessful)
+            notifyOfHit(attackCoords);
+        else
+            notifyOfMiss(attackCoords);
+
+        players[0].setMyTurn(!players[0].isMyTurn());
+    }
+
+    /**
+     * flushes both players PrintWriters
+     */
+    private void flushOutputs()
+    {
+        players[0].getPlayerOutput().flush();
+        players[1].getPlayerOutput().flush();
+    }
+
     private void playRound() throws IOException, InterruptedException
     {
         if(new Random().nextInt(2) == 0)
-            playerOne.setMyTurn(true); // since there is only 2 players we only need to set one player's turn to know whose turn it is
+            players[0].setMyTurn(true); // since there is only 2 players we only need to set one player's turn to know whose turn it is
         else
-            playerOne.setMyTurn(false);
+            players[1].setMyTurn(false);
 
-        System.out.println("chose p1 first? : " + playerOne.isMyTurn());
+        players[0].setMyTurn(false); // todo remove
 
+        System.out.println("chose p1 first? : " + players[0].isMyTurn());
         while(true) // game loop
         {
             Thread.sleep(300);
-            if(playerOne.isMyTurn())
-            {
-                playerOne.getPlayerOutput().println(CommunicationConstants.MY_TURN);
-                playerTwo.getPlayerOutput().println(CommunicationConstants.NOT_MY_TURN);
-                playerOne.getPlayerOutput().flush();
-                playerTwo.getPlayerOutput().flush();
-                String xCoord = playerOne.getPlayerInput().readLine();
-                String yCoord = playerOne.getPlayerInput().readLine();
-                int x = Integer.valueOf(xCoord);
-                int y = Integer.valueOf(yCoord);
-                if(playerTwo.getOcean()[x][y].getShip() == Square.ShipType.EMPTY) // p1 missed all of p2 ships
-                {
-                    playerOne.getPlayerOutput().println(CommunicationConstants.MISS);
-                    playerTwo.getPlayerOutput().println(CommunicationConstants.MISS);
-                    playerOne.getPlayerOutput().flush();
-                    playerTwo.getPlayerOutput().flush();
-                }
-                else
-                {
-                    playerOne.getPlayerOutput().println(CommunicationConstants.HIT);
-                    playerTwo.getPlayerOutput().println(CommunicationConstants.HIT);
-                    playerTwo.getPlayerOutput().println(x); // notify of hit, then of the coords the hit took place
-                    playerTwo.getPlayerOutput().println(y);
-                    playerOne.getPlayerOutput().flush();
-                    playerTwo.getPlayerOutput().flush();
-                }
-            }
-            else
-            {
-                playerTwo.getPlayerOutput().println(CommunicationConstants.MY_TURN);
-                playerOne.getPlayerOutput().println(CommunicationConstants.NOT_MY_TURN);
-                playerTwo.getPlayerOutput().flush();
-                playerOne.getPlayerOutput().flush();
-                String xCoord = playerOne.getPlayerInput().readLine();
-                String yCoord = playerOne.getPlayerInput().readLine();
-                int x = Integer.valueOf(xCoord);
-                int y = Integer.valueOf(yCoord);
-
-                if(playerOne.getOcean()[x][y].getShip() == Square.ShipType.EMPTY) // p2 missed all of p1 ships
-                {
-                    playerOne.getPlayerOutput().println(CommunicationConstants.MISS);
-                    playerTwo.getPlayerOutput().println(CommunicationConstants.MISS);
-                    playerOne.getPlayerOutput().flush();
-                    playerTwo.getPlayerOutput().flush();
-                }
-                else
-                {
-                    playerOne.getPlayerOutput().println(CommunicationConstants.HIT);
-                    playerTwo.getPlayerOutput().println(CommunicationConstants.HIT);
-                    playerOne.getPlayerOutput().println(x); // notify of hit, then of the coords the hit took place
-                    playerOne.getPlayerOutput().println(y);
-                    playerOne.getPlayerOutput().flush();
-                    playerTwo.getPlayerOutput().flush();
-                }
-            }
-
-            playerOne.setMyTurn(!playerOne.isMyTurn());
+            takeTurn();
         }
     }
 
@@ -111,6 +143,9 @@ public class BattleshipsServer
         boolean playerOneDataRead = false;
         boolean playerTwoDataRead = false;
 
+        players[0] = new Player();
+        players[1] = new Player();
+
         while(!playerOneDataRead || !playerTwoDataRead) // read in both players ocean & setup the sockets for each client
         {
             try(ServerSocket serverSocket = new ServerSocket(LISTENING_PORT))
@@ -120,11 +155,11 @@ public class BattleshipsServer
                 if(!playerOneDataRead)
                 {
                     System.out.println("Reading player 1");
-                    playerOne.setOcean((Square[][]) ois.readObject());
+                    players[0].setOcean((Square[][]) ois.readObject());
 //                    playerOneOcean = (Square[][])ois.readObject();
-                    playerOne.setPlayerSocket(client);
-                    playerOne.setPlayerInput(new BufferedReader(new InputStreamReader(playerOne.getPlayerSocket().getInputStream())));
-                    playerOne.setPlayerOutput(new PrintWriter(playerOne.getPlayerSocket().getOutputStream()));
+                    players[0].setPlayerSocket(client);
+                    players[0].setPlayerInput(new BufferedReader(new InputStreamReader(players[0].getPlayerSocket().getInputStream())));
+                    players[0].setPlayerOutput(new PrintWriter(players[0].getPlayerSocket().getOutputStream()));
 //                    playerOneSocket = client;
                     playerOneDataRead = true;
                     serverSocket.close();
@@ -132,20 +167,25 @@ public class BattleshipsServer
                 else
                 {
                     System.out.println("Reading player 2");
-                    playerTwo.setPlayerSocket(client);
-                    playerTwo.setOcean((Square[][])ois.readObject());
-                    playerTwo.setPlayerInput(new BufferedReader(new InputStreamReader(playerTwo.getPlayerSocket().getInputStream())));
-                    playerTwo.setPlayerOutput(new PrintWriter(playerTwo.getPlayerSocket().getOutputStream()));
+                    players[1].setPlayerSocket(client);
+                    players[1].setOcean((Square[][]) ois.readObject());
+                    players[1].setPlayerInput(new BufferedReader(new InputStreamReader(players[1].getPlayerSocket().getInputStream())));
+                    players[1].setPlayerOutput(new PrintWriter(players[1].getPlayerSocket().getOutputStream()));
 //                    playerTwoOcean = (Square[][])ois.readObject();
 //                    playerTwoSocket = client;
                     playerTwoDataRead = true;
                     serverSocket.close();
                 }
             }
-            catch(Exception ioe)
+            catch(IOException ioe)
             {
-                System.out.println("ioe: " + ioe.getMessage());
+                System.out.println("server listen and setup ioe: " + ioe.getMessage());
+                ioe.printStackTrace();
                 // todo: reset connections / terminate
+            }
+            catch(ClassNotFoundException cnfe)
+            {
+                System.out.println("server listen and setup: class not found: " + cnfe.getMessage());
             }
         }
     }

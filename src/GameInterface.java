@@ -90,8 +90,8 @@ public class GameInterface extends JFrame
         oceanPanel.add(enemyOceanPanel);
 
         // used so when we set the border to indicate a players turn, the UI doesn't resize itself / need to call pack() again
-        myOceanPanel.setBorder(new LineBorder(Color.WHITE, 3));
-        enemyOceanPanel.setBorder(new LineBorder(Color.WHITE, 3));
+        myOceanPanel.setBorder(new LineBorder(Color.DARK_GRAY, 3));
+        enemyOceanPanel.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 
         rootPanel.add(fleetInfoPanel);
         fleetInfoPanel.add(myFleetInfoPanel);
@@ -122,6 +122,16 @@ public class GameInterface extends JFrame
         gameStatsPanel.add(new JButton("placeholder"));
         gameStatsPanel.add(new JButton("placeholder"));
         gameStatsPanel.add(new JButton("placeholder"));
+
+//        rootPanel.setBackground(Color.DARK_GRAY);
+//        enemyFleetInfoPanel.setBackground(Color.DARK_GRAY);
+//        enemyOceanPanel.setBackground(Color.DARK_GRAY);
+//        fleetInfoPanel.setBackground(Color.DARK_GRAY);
+//        enemyFleetInfoPanel.setBackground(Color.DARK_GRAY);
+//        gameStatsPanel.setBackground(Color.DARK_GRAY);
+//        myOceanPanel.setBackground(Color.DARK_GRAY);
+//        oceanPanel.setBackground(Color.DARK_GRAY);
+//        myFleetInfoPanel.setBackground(Color.DARK_GRAY);
 
         rootPanel.add(gameStatsPanel);
 
@@ -382,5 +392,8 @@ public class GameInterface extends JFrame
         enemyOcean[x][y].setToMissIcon();
     }
 
+    public void setEnemyOceanSquareHit(int x, int y) { enemyOcean[x][y].setToHitIcon(); }
+    public void setMyOceanSquareHit(int x, int y) { myOcean[x][y].setToHitIcon(); }
+    public void setMyOceanSquareMiss(int x, int y) { myOcean[x][y].setToMissIcon(); }
 
 }
