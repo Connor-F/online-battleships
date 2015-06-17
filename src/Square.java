@@ -2,10 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Square extends JButton implements ActionListener
+public class Square extends JButton implements ActionListener, Serializable
 {
+    private static final long serialVersionUID = 0xdeadL;
     /** the different types of ships that can be on a square */
     public enum ShipType { EMPTY, DESTROYER, SUBMARINE, CRUISER, BATTLESHIP, CARRIER }
     /** the ship type that is located on this particular square */

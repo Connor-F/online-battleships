@@ -16,7 +16,7 @@ public class BattleshipsClient
 
     public BattleshipsClient() throws IOException, InterruptedException
     {
-        SERVER_ADDRESS = InetAddress.getByName("127.0.0.1");
+        SERVER_ADDRESS = InetAddress.getByName("192.168.0.4");
         myTurn = false;
         ocean = removeUnnecessaryInfo(GameInterface.getInstance().getMyOcean());
         setupServerConnection();
