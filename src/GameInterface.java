@@ -392,8 +392,12 @@ public class GameInterface extends JFrame
         enemyOcean[x][y].setToMissIcon();
     }
 
-    public void setEnemyOceanSquareHit(int x, int y) { enemyOcean[x][y].setToHitIcon(); }
+    public void setEnemyOceanSquareHit(int x, int y) { enemyOcean[x][y].setToHitIcon(); paint(enemyOcean[x][y].getGraphics()); }
     public void setMyOceanSquareHit(int x, int y) { myOcean[x][y].setToHitIcon(); }
     public void setMyOceanSquareMiss(int x, int y) { myOcean[x][y].setToMissIcon(); }
+
+
+
+    public void temp(int x, int y) { myOcean[x][y].setIcon(null); }
 
 }

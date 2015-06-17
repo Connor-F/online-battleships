@@ -28,7 +28,12 @@ public class BattleshipsClient
         GameInterface ui = GameInterface.getInstance();
         while(true)
         {
-            String fromServer = inFromServer.readLine();
+            String fromServer;
+            while(!(inFromServer.readLine()).equals(CommunicationConstants.DATA_READY))
+                Thread.sleep(100); // wait until server says its ready
+
+            fromServer = inFromServer.readLine();
+
             String reply;
             int x, y;
 
@@ -43,16 +48,28 @@ public class BattleshipsClient
                         Thread.sleep(200); // now we have the one clicked point, we can send the coords to the server to see if it was a hit / miss
                     x = (int)selectedPoints.get(0).getX();
                     y = (int)selectedPoints.get(0).getY();
+                   // outToServer.println(CommunicationConstants.DONE);
+
+                    outToServer.println(CommunicationConstants.DATA_READY);
+                    outToServer.flush();
                     outToServer.println(x); // send the coords
                     outToServer.println(y);
                     //outToServer.println("");
                     outToServer.flush();
 
+
+                    while(!(inFromServer.readLine().equals(CommunicationConstants.DATA_READY)))
+                        Thread.sleep(100);
+
                     reply = inFromServer.readLine();
                     if(reply.equals(CommunicationConstants.MISS))
+                    {
                         ui.setEnemyOceanSquareMiss(x, y);
+                    }
                     else if(reply.equals(CommunicationConstants.HIT))
+                    {
                         ui.setEnemyOceanSquareHit(x, y);
+                    }
                     break;
 
 
@@ -60,22 +77,33 @@ public class BattleshipsClient
                     ui.setEnemyOceanPanelBorder(CommunicationConstants.COLOUR_MY_TURN);
                     ui.setMyOceanPanelBorder(CommunicationConstants.COLOUR_NOT_MY_TURN);
 
-                    while((reply = inFromServer.readLine()) == null); // block until there is a reply
+
+                    while(!(inFromServer.readLine().equals(CommunicationConstants.DATA_READY)))
+                        Thread.sleep(100); // block until server is ready to send us the attack coords
+                    reply = inFromServer.readLine();
                     System.out.println("reply after being unblocked: " + reply);
                     x = Integer.valueOf(inFromServer.readLine());
                     y = Integer.valueOf(inFromServer.readLine());
                     if(reply.equals(CommunicationConstants.HIT)) // the other player hit one of our ships
+                    {
                         ui.setMyOceanSquareHit(x, y);
+                        //ui.temp(x, y);
+//                        ui.setEnemyOceanSquareHit(x, y);
+                    }
                     else if(reply.equals(CommunicationConstants.MISS))
+                    {
                         ui.setMyOceanSquareMiss(x, y);
+  //                      ui.setEnemyOceanSquareMiss(x, y);
+                    }
+                    //ui.repaint();
                     break;
 
-
-
-                default:
+                default: // todo throw excp
                     System.out.println("In default");
                     break;
             }
+            Square.clearSelectedPoints(); // !!!!!!!!!
+            outToServer.println("NONESENSEDATA"); // todo remove
         }
     }
 

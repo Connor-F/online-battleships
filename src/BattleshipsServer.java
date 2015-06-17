@@ -12,10 +12,6 @@ public class BattleshipsServer
     private Player[] players = new Player[2];
     private int playersTurn;
 
-
-
-
-
     public static void main(String[] args)
     {
         new BattleshipsServer();
@@ -35,21 +31,24 @@ public class BattleshipsServer
         }
     }
 
-    private void notifyOfTurn()
+    private void notifyOfTurn() throws IOException
     {
+        players[playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        players[1 - playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        flushOutputs();
+
         players[playersTurn].getPlayerOutput().println(CommunicationConstants.MY_TURN);
         players[1 - playersTurn].getPlayerOutput().println(CommunicationConstants.NOT_MY_TURN);
+
         flushOutputs();
     }
 
-    private Point findProvidedAttackPoint() throws IOException
+    private Point findProvidedAttackPoint() throws IOException, InterruptedException
     {
-        String in;
-        while((in = players[playersTurn].getPlayerInput().readLine()) == null); // block until we read in data from the client
-        int providedX = Integer.valueOf(in);
-
-        while((in = players[playersTurn].getPlayerInput().readLine()) == null);
-        int providedY = Integer.valueOf(in);
+        while(!(players[playersTurn].getPlayerInput().readLine()).equals(CommunicationConstants.DATA_READY))
+            Thread.sleep(100); // block until client tells us data is ready to be sent
+        int providedX = Integer.valueOf(players[playersTurn].getPlayerInput().readLine());
+        int providedY = Integer.valueOf(players[playersTurn].getPlayerInput().readLine());
 
         System.out.println("points from player " + (1 - playersTurn) + ": " + "x:" + providedX + "    y:" + providedY);
 
@@ -63,6 +62,11 @@ public class BattleshipsServer
 
     private void notifyOfMiss(Point missCoords)
     {
+        players[playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        players[1 - playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        flushOutputs();
+
+
         players[0].getPlayerOutput().println(CommunicationConstants.MISS);
         players[1].getPlayerOutput().println(CommunicationConstants.MISS);
         flushOutputs(); // todo: only need one flush due to println
@@ -74,6 +78,10 @@ public class BattleshipsServer
 
     private void notifyOfHit(Point hitCoords)
     {
+        players[playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        players[1 - playersTurn].getPlayerOutput().println(CommunicationConstants.DATA_READY);
+        flushOutputs();
+
         players[0].getPlayerOutput().println(CommunicationConstants.HIT);
         players[1].getPlayerOutput().println(CommunicationConstants.HIT);
         flushOutputs();
@@ -87,7 +95,7 @@ public class BattleshipsServer
      * handles the playing of the game
      * @throws IOException
      */
-    private void takeTurn() throws IOException
+    private void takeTurn() throws IOException, InterruptedException
     {
 //        if(isFirstGo) // todo this is temp fix
 //        {
@@ -96,6 +104,10 @@ public class BattleshipsServer
 //        }
 
         playersTurn = players[0].isMyTurn() ? 0 : 1;
+        players[playersTurn].getPlayerOutput().println("");
+        players[1 - playersTurn].getPlayerOutput().println("");
+        flushOutputs();
+
         notifyOfTurn();
 
         Point attackCoords = findProvidedAttackPoint();

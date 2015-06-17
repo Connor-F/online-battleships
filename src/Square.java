@@ -114,9 +114,29 @@ public class Square extends JButton implements ActionListener
 //        }
     }
 
-    public void defaultIcon() { setIcon(new ImageIcon(unknownIconPath)); }
-    public void setToHitIcon() { setIcon(new ImageIcon(hitIconPath)); }
-    public void setToMissIcon() { setIcon(new ImageIcon(missIconPath)); }
+    public void defaultIcon()
+    {
+        if(isEnabled())
+            setIcon(new ImageIcon(unknownIconPath));
+        else
+            setDisabledIcon(new ImageIcon(unknownIconPath));
+    }
+
+    public void setToHitIcon()
+    {
+        if(isEnabled())
+            setIcon(new ImageIcon(hitIconPath));
+        else
+            setDisabledIcon(new ImageIcon(hitIconPath));
+    }
+
+    public void setToMissIcon()
+    {
+        if(isEnabled())
+            setIcon(new ImageIcon(missIconPath));
+        else
+            setDisabledIcon(new ImageIcon(missIconPath));
+    }
 
     public void setShip(ShipType ship) { this.shipType = ship; }
     public void setIsSelected(boolean selected) { isSelected = selected; }

@@ -11,4 +11,5 @@ public abstract class CommunicationConstants
     public static final Color COLOUR_NOT_MY_TURN = Color.LIGHT_GRAY;
     public static final String HIT = "hit";
     public static final String MISS = "miss";
+    public static final String DATA_READY = "data_ready";
 }
