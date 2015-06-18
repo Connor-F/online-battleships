@@ -3,21 +3,28 @@ import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * used to set up a connection between the client and server and relay data between them
+ */
 public class BattleshipsClient
 {
+    /** the InetAddress of the BattleshipsServer we want to connect to */
     private static InetAddress SERVER_ADDRESS = null;
-    private static final int SERVER_PORT = 0xdead+1; //todo
+    /** the port the BattleshipsServer is listening to */
+    private static final int SERVER_PORT = 0xdead;
+    /** the actual connection to the server from this client */
     private Socket toServer;
+    /** a PrintWriter that prints to the server's stream */
     private PrintWriter outToServer;
+    /** a BufferedReader that reads from the server's stream */
     private BufferedReader inFromServer;
     /** the players grid, including row/column headings */
     private Square[][] ocean = new Square[11][11];
-    private boolean myTurn;
 
+    // todo refactor throws + javadoc
     public BattleshipsClient() throws IOException, InterruptedException
     {
         SERVER_ADDRESS = InetAddress.getByName("192.168.0.4");
-        myTurn = false;
         ocean = removeUnnecessaryInfo(GameInterface.getInstance().getMyOcean());
         setupServerConnection();
         readAndSend();
@@ -127,6 +134,10 @@ public class BattleshipsClient
         return tempOcean;
     }
 
+    /**
+     * tries to establish a connection to the BattleshipsServer, if successful our ocean is sent to the server
+     * @throws IOException if something went wrong when trying to connect to the BattleshipsServer
+     */
     private void setupServerConnection() throws IOException
     {
         toServer = new Socket(SERVER_ADDRESS, SERVER_PORT);

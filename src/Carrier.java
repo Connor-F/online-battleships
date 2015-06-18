@@ -8,7 +8,8 @@ public class Carrier extends Ship
     public Carrier()
     {
         setImagePath("images/ships/carrier_");
-        setInitialText("CARRIER (5)");
+        setButtonInitialText("CARRIER (5)");
+        setLabelInitialText(" Carrier waiting to be placed");
         setShipSize(5);
         setIsPlaced(false);
         addActionListener(this);

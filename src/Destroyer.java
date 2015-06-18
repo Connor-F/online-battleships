@@ -5,7 +5,8 @@ public class Destroyer extends Ship
     public Destroyer()
     {
         setImagePath("images/ships/destroyer_");
-        setInitialText("DESTROYER (2)");
+        setButtonInitialText("DESTROYER (2)");
+        setLabelInitialText(" Destroyer waiting to be placed");
         setShipSize(2);
         addActionListener(this);
         setIsPlaced(false);

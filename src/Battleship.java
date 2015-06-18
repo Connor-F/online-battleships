@@ -1,29 +1,27 @@
 import java.awt.event.ActionEvent;
 
 /**
- * Created by connor on 15/06/15.
+ * represents the data to do with the Battleship in the game, including it's placement button, size, image path etc.
  */
 public class Battleship extends Ship
 {
     public Battleship()
     {
         setImagePath("images/ships/battleship_");
-        setInitialText("BATTLESHIP (4)");
+        setButtonInitialText("BATTLESHIP (4)");
+        setLabelInitialText(" Battleship waiting to be placed");
         setShipSize(4);
         setIsPlaced(false);
         addActionListener(this);
-        //addToAllShips(this);
     }
 
+    /**
+     * when the Battleship button is pressed the setup procedure is called for this instance
+     * @param e the ActionEvent that caused this method to be called
+     */
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        //super.actionPerformed(e);
-        //System.out.println("Action performed in: Battleship");
         GameInterface.getInstance().setupShip(this);
-//        if(getIsPlaced())
-//            setEnabled(false);
-//        else
-//            setIsPlaced(!getIsPlaced());
     }
 }

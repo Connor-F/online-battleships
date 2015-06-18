@@ -1,23 +1,38 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.IOException;
 import java.util.*;
 
+/**
+ * Singleton class that contains all the data to do with the user interface for the game. Also sets up the interface
+ * and allows other classes to modify the interface when necessary
+ */
 public class GameInterface extends JFrame
 {
+    /** singleton */
     private static GameInterface ui = null;
+    /** the main panel that everything else is contained in */
     private JPanel rootPanel = new JPanel();
     private JPanel oceanPanel = new JPanel();
     private JPanel myOceanPanel = new JPanel(new GridLayout(11, 11));
     private JPanel enemyOceanPanel = new JPanel(new GridLayout(11, 11));
-    private JPanel fleetInfoPanel = new JPanel();
-    private JPanel myFleetInfoPanel = new JPanel();
-    private JPanel enemyFleetInfoPanel = new JPanel();
     private JPanel gameStatsPanel = new JPanel();
 
-    private Ship[] allShips = new Ship[5];
+
+    private JPanel fleetInfoPanel = new JPanel();
+    private JPanel myFleetButtonsPanel = new JPanel(new GridLayout(0, 1));
+    private JPanel myFleetStatsPanel = new JPanel(new GridLayout(0, 1));
+    private JPanel myFleetInfoPanel = new JPanel(new GridLayout(0, 2));
+
+    private JPanel enemyFleetButtonsPanel = new JPanel(new GridLayout(0, 1));
+    private JPanel enemyFleetStatsPanel = new JPanel(new GridLayout(0, 1));
+    private JPanel enemyFleetInfoPanel = new JPanel(new GridLayout(0, 2));
+
+    private Ship[] allMyShips = new Ship[5];
+    private Ship[] allEnemyShips = new Ship[5];
+
+
+
 
     private Square[][] myOcean = new Square[11][11];
     private Square[][] enemyOcean = new Square[11][11];
@@ -56,8 +71,8 @@ public class GameInterface extends JFrame
 
     private boolean areAllShipsPlaced()
     {
-        for(int i = 0; i < allShips.length; i++)
-            if(!allShips[i].getIsPlaced())
+        for(int i = 0; i < allMyShips.length; i++)
+            if(!allMyShips[i].getIsPlaced())
                 return false;
         return true;
     }
@@ -73,16 +88,47 @@ public class GameInterface extends JFrame
 
     private void initialiseInterface()
     {
-        allShips[0] = new Destroyer();
-        allShips[1] = new Submarine();
-        allShips[2] = new Cruiser();
-        allShips[3] = new Battleship();
-        allShips[4] = new Carrier();
+        allEnemyShips[0] = new Destroyer();
+        allEnemyShips[1] = new Submarine();
+        allEnemyShips[2] = new Cruiser();
+        allEnemyShips[3] = new Battleship();
+        allEnemyShips[4] = new Carrier();
+
+        allMyShips[0] = new Destroyer();
+        allMyShips[1] = new Submarine();
+        allMyShips[2] = new Cruiser();
+        allMyShips[3] = new Battleship();
+        allMyShips[4] = new Carrier();
 
         setTitle("Battleships Online");
         rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.Y_AXIS));
-        myFleetInfoPanel.setLayout(new BoxLayout(myFleetInfoPanel, BoxLayout.Y_AXIS));
-        enemyFleetInfoPanel.setLayout(new BoxLayout(enemyFleetInfoPanel, BoxLayout.Y_AXIS));
+
+//        fleetInfoPanel.setLayout(new BorderLayout());
+        //myFleetButtonsPanel.setLayout(new BoxLayout(myFleetButtonsPanel, BoxLayout.PAGE_AXIS));
+        //myFleetStatsPanel.setLayout(new BoxLayout(myFleetStatsPanel, BoxLayout.Y_AXIS));
+        //myFleetInfoPanel.setLayout(new GridLayout());
+        myFleetInfoPanel.setBorder(new LineBorder(Color.ORANGE, 3));
+        myFleetInfoPanel.setPreferredSize(new Dimension(390, 140));
+        myFleetInfoPanel.add(myFleetButtonsPanel);
+        myFleetInfoPanel.add(myFleetStatsPanel);
+//        myFleetStatsPanel.add(new JLabel("stat1"));
+//        myFleetStatsPanel.add(new JLabel("stat2"));
+//        myFleetStatsPanel.add(new JLabel("stat3"));
+//        myFleetStatsPanel.add(new JLabel("stat4"));
+//        myFleetStatsPanel.add(new JLabel("stat5"));
+
+
+        enemyFleetInfoPanel.setBorder(new LineBorder(Color.MAGENTA, 3));
+        enemyFleetInfoPanel.setPreferredSize(new Dimension(390, 140));
+        enemyFleetInfoPanel.add(enemyFleetButtonsPanel);
+        enemyFleetInfoPanel.add(enemyFleetStatsPanel);
+        enemyFleetStatsPanel.add(new JLabel("stat1"));
+        enemyFleetStatsPanel.add(new JLabel("stat2"));
+        enemyFleetStatsPanel.add(new JLabel("stat3"));
+        enemyFleetStatsPanel.add(new JLabel("stat4"));
+        enemyFleetStatsPanel.add(new JLabel("stat5"));
+        //myFleetInfoPanel.setLayout(new BoxLayout(myFleetInfoPanel, BoxLayout.Y_AXIS));
+        //enemyFleetInfoPanel.setLayout(new BoxLayout(enemyFleetInfoPanel, BoxLayout.Y_AXIS));
 
         setContentPane(rootPanel);
         rootPanel.add(oceanPanel);
@@ -94,31 +140,34 @@ public class GameInterface extends JFrame
         enemyOceanPanel.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 
         rootPanel.add(fleetInfoPanel);
-        fleetInfoPanel.add(myFleetInfoPanel);
-        fleetInfoPanel.add(enemyFleetInfoPanel);
+        //myFleetInfoPanel.add(myFleetButtonsPanel);
+        fleetInfoPanel.add(myFleetInfoPanel, BorderLayout.WEST);
+        fleetInfoPanel.add(enemyFleetInfoPanel, BorderLayout.EAST);
 
-        myFleetInfoPanel.add(new JLabel("placeholder"));
-        enemyFleetInfoPanel.add(new JLabel("placeholder"));
+
         gameStatsPanel.add(new JLabel("placeholder"));
 
 
-        //myFleetInfoPanel.add(new Destroyer());
-        for(int i = 0; i < allShips.length; i++)
-            myFleetInfoPanel.add(allShips[i]);
-//        myFleetInfoPanel.add(destroyerShip);
-//        myFleetInfoPanel.add(submarineShip);
-//        myFleetInfoPanel.add(cruiserShip);
-//        myFleetInfoPanel.add(battleShip);
-//        myFleetInfoPanel.add(carrierShip);
-        //addAllActionListeners();
+        for(int i = 0; i < allMyShips.length; i++)
+        {
+            myFleetButtonsPanel.add(allMyShips[i]);
+            enemyFleetButtonsPanel.add(allEnemyShips[i]);
+            allEnemyShips[i].setEnabled(false);
+        }
 
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
-        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        enemyFleetInfoPanel.add(new JButton("placeholder"));
+//        myFleetInfoPanel.add(new JLabel("placeholder"));
+//        myFleetInfoPanel.add(new JLabel("placeholder"));
+//        myFleetInfoPanel.add(new JLabel("placeholder"));
+//        myFleetInfoPanel.add(new JLabel("placeholder"));
+//        myFleetInfoPanel.add(new JLabel("placeholder"));
+
         gameStatsPanel.add(new JButton("placeholder"));
         gameStatsPanel.add(new JButton("placeholder"));
         gameStatsPanel.add(new JButton("placeholder"));
@@ -150,6 +199,7 @@ public class GameInterface extends JFrame
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -168,15 +218,15 @@ public class GameInterface extends JFrame
     }
 
     /**
-     * used by setupShip to find the passed in Ship's position in the allShips array
+     * used by setupShip to find the passed in Ship's position in the allMyShips array
      *
      * @param shipToAdd the Ship that needs to be added
-     * @return the position in the allShips array that the Ship is located
+     * @return the position in the allMyShips array that the Ship is located
      */
     private int findShipsIndex(Ship shipToAdd)
     {
-        for(int i = 0; i < allShips.length; i++)
-            if(allShips[i] == shipToAdd)
+        for(int i = 0; i < allMyShips.length; i++)
+            if(allMyShips[i] == shipToAdd)
                 return i;
         return -1; // todo make return exception
     }
@@ -184,41 +234,41 @@ public class GameInterface extends JFrame
     protected void setupShip(Ship shipToAdd) // protected so can still use with singleton
     {
         int shipToAddIndex = findShipsIndex(shipToAdd);
-        if(!allShips[shipToAddIndex].getIsPlaced())
+        if(!allMyShips[shipToAddIndex].getIsPlaced())
         {
-            allShips[shipToAddIndex].setEnabled(true); //@@@@@@@@@@@@@@new
+            allMyShips[shipToAddIndex].setEnabled(true); //@@@@@@@@@@@@@@new
 
             setEnabledOcean(myOcean, true);
-            allShips[shipToAddIndex].setText("Done (" + allShips[shipToAddIndex].getShipSize() + ")");
+            allMyShips[shipToAddIndex].setText("Done (" + allMyShips[shipToAddIndex].getShipSize() + ")");
 
-            for(int i = 0; i < allShips.length; i++) // disable every other ship button
-                if(allShips[i] != shipToAdd)
-                    allShips[i].setEnabled(false);
+            for(int i = 0; i < allMyShips.length; i++) // disable every other ship button
+                if(allMyShips[i] != shipToAdd)
+                    allMyShips[i].setEnabled(false);
 
-            if(Square.getSelectedPoints().size() == allShips[shipToAddIndex].getShipSize()) // all our squares for the ship have been clicked
-                allShips[shipToAddIndex].setIsPlaced(true);
+            if(Square.getSelectedPoints().size() == allMyShips[shipToAddIndex].getShipSize()) // all our squares for the ship have been clicked
+                allMyShips[shipToAddIndex].setIsPlaced(true);
 
             // todo if the amount of squares is not == to ship size then the button sticks on "done"
             //else
                 //return;
         }
 
-        if(allShips[shipToAddIndex].getIsPlaced())
+        if(allMyShips[shipToAddIndex].getIsPlaced())
         {
             setEnabledOcean(myOcean, false);
-            allShips[shipToAddIndex].setText(allShips[shipToAddIndex].getInitialText());
+            allMyShips[shipToAddIndex].setText(allMyShips[shipToAddIndex].getButtonInitialText());
 
-            for(int i = 0; i < allShips.length; i++) // enable all unplaced ship buttons
-                if(!allShips[i].getIsPlaced())
-                    allShips[i].setEnabled(true);
+            for(int i = 0; i < allMyShips.length; i++) // enable all unplaced ship buttons
+                if(!allMyShips[i].getIsPlaced())
+                    allMyShips[i].setEnabled(true);
 
             ArrayList<Point> coordsSelected = new ArrayList<>(new HashSet<>(Square.getSelectedPoints())); // coordsSelected now contains no duplicates
             try
             {
-                allShips[shipToAddIndex].setEnabled(false); // @@@@@@@@@@@@@@@new
-                processShip(coordsSelected, allShips[shipToAddIndex]);
+                allMyShips[shipToAddIndex].setEnabled(false); // @@@@@@@@@@@@@@@new
+                processShip(coordsSelected, allMyShips[shipToAddIndex]);
 
-                Square.ShipType type = findShipType(allShips[shipToAddIndex]); // need to know our ships type
+                Square.ShipType type = findShipType(allMyShips[shipToAddIndex]); // need to know our ships type
                 for(Point p : coordsSelected)
                     myOcean[(int)p.getX()][(int)p.getY()].setShip(type); // since the ship adding was successful, we now add the ship type to the squares clicked
             }
@@ -226,15 +276,15 @@ public class GameInterface extends JFrame
             {
                 System.out.println("Invalid ship placement. For: " + shipToAdd.getImagePath());
                 setEnabledOcean(myOcean, false);
-                allShips[shipToAddIndex].setEnabled(true); // @@@@@@@@@@@@@@@new
+                allMyShips[shipToAddIndex].setEnabled(true); // @@@@@@@@@@@@@@@new
 
                 //@@@@@@@@@@@@@@@@@@ uncomment
-                //for(int i = 0; i < allShips.length; i++)
-                   // if(allShips[i] == shipToAdd)
-                       // allShips[i].setEnabled(true);
+                //for(int i = 0; i < allMyShips.length; i++)
+                   // if(allMyShips[i] == shipToAdd)
+                       // allMyShips[i].setEnabled(true);
 
-                allShips[shipToAddIndex].setIsPlaced(false);
-                //allShips[shipToAddIndex].setEnabled(true);
+                allMyShips[shipToAddIndex].setIsPlaced(false);
+                //allMyShips[shipToAddIndex].setEnabled(true);
                 //shipToAdd.setIsPlaced(false);
 
                 // need to reset any selected squares to default icons if they were selected

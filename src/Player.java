@@ -3,15 +3,21 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * Created by connor on 16/06/15.
+ * represents a client that is playing the game
  */
 public class Player
 {
-    private BufferedReader playerInput;
-    private PrintWriter playerOutput;
-    private boolean myTurn;
+    /** the actual connection between the client and server */
     private Socket playerSocket;
+    /** the input to the server from the client */
+    private BufferedReader playerInput;
+    /** the output to the client from the server */
+    private PrintWriter playerOutput;
+    /** used so the server can keep track of whose turn it is */
+    private boolean myTurn;
+    /** the playeres Ocean */
     private Square[][] ocean = new Square[11][11];
+    /** counts how many times this player has been successfully hit by the other players attacks */
     private int shipHitCounter = 0;
 
     /**
@@ -24,21 +30,18 @@ public class Player
         return shipHitCounter == 17;
     }
 
+    /**
+     * add 1 to the value of the shipHitCounter
+     */
     public void incrementHitCounter()
     {
         ++shipHitCounter;
     }
 
-
-
+    // getters
     public BufferedReader getPlayerInput()
     {
         return playerInput;
-    }
-
-    public void setPlayerInput(BufferedReader playerInput)
-    {
-        this.playerInput = playerInput;
     }
 
     public PrintWriter getPlayerOutput()
@@ -46,19 +49,9 @@ public class Player
         return playerOutput;
     }
 
-    public void setPlayerOutput(PrintWriter playerOutput)
-    {
-        this.playerOutput = playerOutput;
-    }
-
     public boolean isMyTurn()
     {
         return myTurn;
-    }
-
-    public void setMyTurn(boolean myTurn)
-    {
-        this.myTurn = myTurn;
     }
 
     public Socket getPlayerSocket()
@@ -66,15 +59,30 @@ public class Player
         return playerSocket;
     }
 
-    public void setPlayerSocket(Socket playerSocket)
-    {
-        this.playerSocket = playerSocket;
-    }
-
-
     public Square[][] getOcean()
     {
         return ocean;
+    }
+
+    // setters
+    public void setPlayerInput(BufferedReader playerInput)
+    {
+        this.playerInput = playerInput;
+    }
+
+    public void setPlayerOutput(PrintWriter playerOutput)
+    {
+        this.playerOutput = playerOutput;
+    }
+
+    public void setMyTurn(boolean myTurn)
+    {
+        this.myTurn = myTurn;
+    }
+
+    public void setPlayerSocket(Socket playerSocket)
+    {
+        this.playerSocket = playerSocket;
     }
 
     public void setOcean(Square[][] ocean)

@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class BattleshipsServer
 {
-    private static final int LISTENING_PORT = 0xdead+1; // todo
+    private static final int LISTENING_PORT = 0xdead;
     private Player[] players = new Player[2];
     private int playersTurn;
 

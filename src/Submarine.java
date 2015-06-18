@@ -8,7 +8,8 @@ public class Submarine extends Ship
     public Submarine()
     {
         setImagePath("images/ships/submarine_");
-        setInitialText("SUBMARINE (3)");
+        setButtonInitialText("SUBMARINE (3)");
+        setLabelInitialText(" Submarine waiting to be placed");
         setShipSize(3);
         setIsPlaced(false);
         addActionListener(this);

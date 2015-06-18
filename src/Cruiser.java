@@ -8,7 +8,8 @@ public class Cruiser extends Ship
     public Cruiser()
     {
         setImagePath("images/ships/cruiser_");
-        setInitialText("CRUISER (3)");
+        setButtonInitialText("CRUISER (3)");
+        setLabelInitialText(" Cruiser waiting to be placed");
         setShipSize(3);
         setIsPlaced(false);
         addActionListener(this);
