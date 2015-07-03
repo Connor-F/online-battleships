@@ -39,6 +39,7 @@ public class BattleshipsClient
             while(!(inFromServer.readLine()).equals(CommunicationConstants.DATA_READY))
                 Thread.sleep(100); // wait until server says its ready
 
+            ui.updateLabels();
             fromServer = inFromServer.readLine();
 
             String reply;
@@ -76,6 +77,7 @@ public class BattleshipsClient
                     else if(reply.equals(CommunicationConstants.HIT))
                     {
                         ui.setEnemyOceanSquareHit(x, y);
+                       // ocean[x][y].getShip()
                     }
                     break;
 

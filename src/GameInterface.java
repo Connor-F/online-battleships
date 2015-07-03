@@ -111,6 +111,15 @@ public class GameInterface extends JFrame
         myFleetInfoPanel.setPreferredSize(new Dimension(390, 140));
         myFleetInfoPanel.add(myFleetButtonsPanel);
         myFleetInfoPanel.add(myFleetStatsPanel);
+
+        for(int i = 0; i < allMyShips.length; i++)
+        {
+            myFleetStatsPanel.add(allMyShips[i].getShipLabel());
+            enemyFleetStatsPanel.add(allEnemyShips[i].getShipLabel());
+        }
+
+
+
 //        myFleetStatsPanel.add(new JLabel("stat1"));
 //        myFleetStatsPanel.add(new JLabel("stat2"));
 //        myFleetStatsPanel.add(new JLabel("stat3"));
@@ -122,11 +131,11 @@ public class GameInterface extends JFrame
         enemyFleetInfoPanel.setPreferredSize(new Dimension(390, 140));
         enemyFleetInfoPanel.add(enemyFleetButtonsPanel);
         enemyFleetInfoPanel.add(enemyFleetStatsPanel);
-        enemyFleetStatsPanel.add(new JLabel("stat1"));
-        enemyFleetStatsPanel.add(new JLabel("stat2"));
-        enemyFleetStatsPanel.add(new JLabel("stat3"));
-        enemyFleetStatsPanel.add(new JLabel("stat4"));
-        enemyFleetStatsPanel.add(new JLabel("stat5"));
+//        enemyFleetStatsPanel.add(new JLabel("stat1"));
+//        enemyFleetStatsPanel.add(new JLabel("stat2"));
+//        enemyFleetStatsPanel.add(new JLabel("stat3"));
+//        enemyFleetStatsPanel.add(new JLabel("stat4"));
+//        enemyFleetStatsPanel.add(new JLabel("stat5"));
         //myFleetInfoPanel.setLayout(new BoxLayout(myFleetInfoPanel, BoxLayout.Y_AXIS));
         //enemyFleetInfoPanel.setLayout(new BoxLayout(enemyFleetInfoPanel, BoxLayout.Y_AXIS));
 
@@ -197,6 +206,7 @@ public class GameInterface extends JFrame
             }
         }
 
+        updateLabels();
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -318,6 +328,15 @@ public class GameInterface extends JFrame
         else if(ship instanceof Carrier)
             return Square.ShipType.CARRIER;
         throw new NoSuchShipException("No type exists for the provided Ship.");
+    }
+
+    public void updateLabels()
+    {
+        for(int i = 0; i < allEnemyShips.length; i++)
+        {
+            allEnemyShips[i].getShipLabel().setText(allEnemyShips[i].getShipHealth() + " / " + allEnemyShips[i].getShipSize());
+            allMyShips[i].getShipLabel().setText(allMyShips[i].getShipHealth() + " / " + allMyShips[i].getShipSize());
+        }
     }
 
     /**

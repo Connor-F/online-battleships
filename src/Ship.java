@@ -13,6 +13,7 @@ public class Ship extends JButton implements ActionListener
     private String imagePath;
     private String buttonInitialText;
     private int shipSize;
+    private int shipHealth;
     private JLabel shipLabel = new JLabel();
     private String labelInitialText;
     // todo store array of Point[shipSize] here to inidcate the location of the ships
@@ -53,10 +54,17 @@ public class Ship extends JButton implements ActionListener
         System.out.println("ship act. per.");
     }
 
-    public void setShipSize(int size) { shipSize = size; }
+    public void setShipSize(int size)
+    {
+        shipSize = size;
+        shipHealth = size;
+    }
+
     public void setIsPlaced(boolean placed) { isPlaced = placed; }
 
     public int getShipSize() { return shipSize; }
+    public int getShipHealth() { return shipHealth; }
+    public JLabel getShipLabel() { return shipLabel; }
     public String getImagePath() { return imagePath; }
     public String getButtonInitialText() { return buttonInitialText; }
     public boolean getIsPlaced() { return isPlaced; }

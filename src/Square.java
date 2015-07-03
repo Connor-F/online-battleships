@@ -11,7 +11,7 @@ public class Square extends JButton implements ActionListener, Serializable
     /** the different types of ships that can be on a square */
     public enum ShipType { EMPTY, DESTROYER, SUBMARINE, CRUISER, BATTLESHIP, CARRIER }
     /** the ship type that is located on this particular square */
-    private ShipType shipType;
+    private ShipType shipType; // todo: make this just Ship and store a ship type, null if empty
     /** if this square has been hit already */
     private boolean hit;
     private static String unknownIconPath = "images/unknown.jpg";
@@ -31,7 +31,7 @@ public class Square extends JButton implements ActionListener, Serializable
             setDisabledIcon(getCorrectHeading());
         hit = false;
         isSelected = false;
-        shipType = ShipType.EMPTY;
+        //shipType = ShipType.EMPTY;
         setPreferredSize(new Dimension(35, 35));
         selectedPoints = new ArrayList<>();
         addActionListener(this);
